@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<toolkitModel xmlns="http://www.ibm.com/xmlns/prod/streams/spl/toolkit" productVersion="4.2.0.0" xmlns:common="http://www.ibm.com/xmlns/prod/streams/spl/common" xmlns:ti="http://www.ibm.com/xmlns/prod/streams/spl/toolkitInfo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <toolkit name="com.ibm.streamsx.metricsMonitor.MemoryLeak" requiredProductVersion="4.2.0.0" version="1.0.0">
+    <description/>
+    <uriTable>
+      <uri index="1" value="com.ibm.streamsx.monitoring.sample.MetricsMonitor.MemoryLeak/Main.spl"/>
+      <uri index="2" value="com.ibm.streamsx.monitoring.sample.MetricsMonitor.MemoryLeak/MemoryLeak"/>
+    </uriTable>
+    <namespace name="com.ibm.streamsx.monitoring.sample.MetricsMonitor.MemoryLeak">
+      <primitiveOp language="Java" modelUriIndex="2" name="MemoryLeak" public="true">
+        <description>Java Operator MemoryLeak</description>
+        <parameter expressionMode="Constant" name="vmArg" optional="true" type="rstring">
+          <description>
+Specifies command-line arguments that are passed to the Java virtual machine that the operator runs within.
+</description>
+        </parameter>
+        <inputPort maxNumPorts="1" minNumPorts="1" optional="false" windowPunctInputMode="Oblivious">
+          <description>Port that ingests tuples</description>
+          <windowPolicy>NonWindowed</windowPolicy>
+        </inputPort>
+        <inputPort minNumPorts="0" optional="true" windowPunctInputMode="Oblivious">
+          <description>Optional input ports</description>
+          <windowPolicy>NonWindowed</windowPolicy>
+        </inputPort>
+      </primitiveOp>
+      <compositeOp column="11" line="23" name="Main" potentialMain="true" uriIndex="1"/>
+      <compositeOp column="11" line="72" name="MemoryLeakSimulator" potentialMain="true" uriIndex="1"/>
+    </namespace>
+    <dependency>
+      <common:name>com.ibm.streamsx.monitoring</common:name>
+      <common:version>[1.2.0,2.0.0)</common:version>
+    </dependency>
+    <sabFiles>
+      <ti:include path="toolkit.xml" root="toolkitDir"/>
+      <ti:include path="impl/java/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/java/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/bin/**" root="toolkitDir"/>
+      <ti:include path="impl/lib/**" root="toolkitDir"/>
+      <ti:include path="impl/nl/*.dat" root="toolkitDir"/>
+      <ti:include path="etc/**" root="toolkitDir"/>
+      <ti:include path="lib/**" root="toolkitDir"/>
+      <ti:include path="nl/**" root="toolkitDir"/>
+      <ti:include path="opt/**" root="toolkitDir"/>
+    </sabFiles>
+  </toolkit>
+
+</toolkitModel>

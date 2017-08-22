@@ -1,0 +1,13 @@
+[
+	{
+	  "metricName" : "nResidentMemoryConsumption",
+	  "thresholds" :
+	  {
+	    "increasePercentage" : ">80,10000"
+	  },
+	  "filters" :
+	  {
+	    "jobName" : "com.ibm.streamsx.monitoring.sample.MetricsMonitor.MemoryLeak.*"
+	  }
+	}
+]

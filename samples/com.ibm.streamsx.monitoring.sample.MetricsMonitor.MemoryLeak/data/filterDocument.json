@@ -1,0 +1,26 @@
+[
+	{
+		"domainIdPatterns":".*",
+		"instances":
+		[
+			{
+				"instanceIdPatterns":".*",
+				"jobs":
+				[
+					{
+						"jobNamePatterns":"com.ibm.streamsx.monitoring.sample.MetricsMonitor.MemoryLeak.*",
+						"pes":
+						[
+							{
+								"metricNamePatterns":
+								[
+									"nResidentMemoryConsumption"
+								]
+							}
+						]
+					}
+				]
+			}
+		]
+	}
+]

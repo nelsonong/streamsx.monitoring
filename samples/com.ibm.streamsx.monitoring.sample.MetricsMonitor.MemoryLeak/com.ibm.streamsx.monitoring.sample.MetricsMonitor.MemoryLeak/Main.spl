@@ -1,0 +1,111 @@
+//
+// ****************************************************************************
+// * Copyright (C) 2017, International Business Machines Corporation          *
+// * All rights reserved.                                                     *
+// ****************************************************************************
+//
+
+/**
+ * This sample application for the [com.ibm.streamsx.monitoring::MetricsMonitor]
+ * simulates an application that has a memory leak.
+ * 
+ * The MetricsMonitor's threshold document should have a threshold rule that gets 
+ * triggered when the nResidentMemoryConsumption is increasing 80% of the time 
+ * over a duration of 10 seconds. Look in the thresholdDocument.json in the data 
+ * directory for more details.
+ */
+ 
+namespace com.ibm.streamsx.monitoring.sample.MetricsMonitor.MemoryLeak ;
+
+use com.ibm.streamsx.monitoring.metrics::* ;
+
+
+composite Main
+{
+	graph
+		/**
+		 * The MemoryLeakMonitor monitors the MemoryLeakSimulator for memory leaks. 
+		 * See the threshold rules used in the data/thresholdDocument.json.
+		 */
+		 () as Monitor = MemoryLeakMonitor()
+		 {
+		 
+		 }
+		 
+		/**
+		 * The MemoryLeakSimulator simulates a scenario where the increase percentage 
+		 * of the nResidentMemoryConsumption metric is above 80 for a duration of 10 
+		 * seconds.
+		 */
+		 () as Simulator = MemoryLeakSimulator()
+		 {
+		 
+		 }
+}
+
+composite MemoryLeakMonitor
+{
+	graph
+		/*
+		 * The MetricsSource outputs nResidentMemoryConsumption metric tuples.
+		 */
+		stream<Notification> MetricsTuples = MetricsSource()
+		{
+			param
+				connectionURL: getSubmissionTimeValue("connectionURL");
+				user: getSubmissionTimeValue("user");
+				password: getSubmissionTimeValue("password");
+				domainId: getSubmissionTimeValue("domainId");
+				scanPeriod: (float64)getSubmissionTimeValue("scanPeriod", "5.0");
+				filterDocument : dataDirectory() + "/filterDocument.json" ;
+				emitMetricTuple : periodic ;
+		}
+
+		/**
+		 * The MetricsMonitor monitors the nResidentMemoryConsumption and outputs an 
+		 * alert when its increase percentage goes above 80.
+		 */
+		stream<rstring message> MetricsAlerts = MetricsMonitor(MetricsTuples)
+		{
+			param
+				thresholdDocumentPath : dataDirectory() + "/thresholdDocument.json" ;
+		}
+
+		/**
+		 * The FileSink outputs the messages to a text file. This can easily be 
+		 * substituted with an Export/Publish operator.
+		 */
+		() as Sink = FileSink(MetricsAlerts)
+		{
+			param
+				file : "alerts.txt" ;
+		}
+}
+
+composite MemoryLeakSimulator
+{
+	graph
+		/* 
+		 * The Beacon operator sends 1 tuple out to initiate the MemoryLeak operator.
+		 */
+		stream<rstring emptyMessage> TupleData = Beacon()
+		{
+			param
+				period : 1.0 ;
+				iterations: 1 ;
+			output
+				TupleData : emptyMessage = "" ;
+		}
+		
+		/* 
+		 * The MemoryLeak operator generates a memory leak after it receives a 
+		 * tuple. If left running too long, a java.lang.OutOfMemoryError will be 
+		 * thrown.
+		 */
+		() as MemoryLeak_0 = MemoryLeak(TupleData)
+		{
+		
+		}
+
+}
+
